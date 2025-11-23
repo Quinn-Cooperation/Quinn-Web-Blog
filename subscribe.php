@@ -23,23 +23,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         
-        // --- SEND EMAIL LOGIC ---
+        // --- ADVANCED EMAIL LOGIC (Anti-Spam) ---
         $to = $email;
         $subject = "Welcome to QuinnCoop! 🚀";
-        
-        // Headers for HTML Email
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= "From: QuinnCoop <no-reply@quinncoop.org>" . "\r\n"; // Update with your domain email
+        $from_email = "no-reply@quinncoop.org"; // MUST exist in your cPanel
+        $from_name = "QuinnCoop";
 
-        // The HTML Email Content
-        $message = '
+        // Generate a boundary string
+        $random_hash = md5(date('r', time())); 
+        $boundary = "PHP-mixed-".$random_hash;
+
+        // Headers
+        $headers = "From: $from_name <$from_email>\r\n";
+        $headers .= "Reply-To: contact@quinncoop.org\r\n"; // Optional: Your real email
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: multipart/alternative; boundary=\"PHP-alt-$random_hash\"\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+
+        // --- PLAIN TEXT VERSION (For Spam Filters) ---
+        $message = "--PHP-alt-$random_hash\r\n";
+        $message .= "Content-Type: text/plain; charset=\"UTF-8\"\r\n";
+        $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        $message .= "Welcome to QuinnCoop!\n\nThank you for subscribing to our blog.\nRead the latest updates here: https://blog.quinncoop.org\n\n(c) 2025 QuinnCoop.\r\n\r\n";
+
+        // --- HTML VERSION (For Humans) ---
+        $message .= "--PHP-alt-$random_hash\r\n";
+        $message .= "Content-Type: text/html; charset=\"UTF-8\"\r\n";
+        $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        $message .= '
         <!DOCTYPE html>
         <html>
         <head>
             <style>
-                body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-                .container { max-width: 600px; margin: 30px auto; background: #ffffff; padding: 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                body { font-family: Helvetica, Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
                 .header { background-color: #000000; padding: 30px; text-align: center; }
                 .header h1 { color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 2px; }
                 .content { padding: 40px 30px; color: #333333; line-height: 1.6; }
@@ -70,11 +87,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </body>
         </html>
         ';
+        $message .= "\r\n--PHP-alt-$random_hash--";
 
-        // Send the mail
-        mail($to, $subject, $message, $headers);
+        // --- SEND MAIL WITH RETURN-PATH ---
+        // The "-f" parameter is CRITICAL for passing spam filters
+        if(mail($to, $subject, $message, $headers, "-f$from_email")) {
+            echo "<script>alert('Successfully Subscribed! Please check your email inbox.'); window.location.href='index.php';</script>";
+        } else {
+            // Fallback without -f if server blocks it
+            mail($to, $subject, $message, $headers);
+            echo "<script>alert('Successfully Subscribed!'); window.location.href='index.php';</script>";
+        }
 
-        echo "<script>alert('Successfully Subscribed! Please check your email inbox.'); window.location.href='index.php';</script>";
     } else {
         echo "<script>alert('Database Error'); window.history.back();</script>";
     }
