@@ -52,7 +52,10 @@ include '../db.php';
         .mil-table-responsive { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #222; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 18px 25px; text-align: left; border-bottom: 1px solid #222; }
-        th { background: #181818; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; font-weight: 700; }
+        
+        /* UPDATED: Removed text-transform: uppercase */
+        th { background: #181818; color: #666; font-size: 12px; letter-spacing: 0.5px; font-weight: 700; }
+        
         tr:last-child td { border-bottom: none; }
         tr:hover { background: #161616; }
         td { color: #ccc; font-size: 14px; vertical-align: middle; }
@@ -138,7 +141,8 @@ include '../db.php';
                             echo "<tr>";
                             echo "<td><img src='../" . $row['image_url'] . "' style='width:40px; height:40px; object-fit:cover; border-radius:6px;'></td>";
                             echo "<td><strong>" . $row['title'] . "</strong></td>";
-                            echo "<td><span style='background:#222; color:#888; padding:4px 8px; border-radius:4px; font-size:11px; text-transform:uppercase; font-weight:bold;'>" . $row['cat_name'] . "</span></td>";
+                            // UPDATED: Removed text-transform:uppercase from span style below
+                            echo "<td><span style='background:#222; color:#888; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold;'>" . $row['cat_name'] . "</span></td>";
                             echo "<td style='color:#666; font-size:13px;'>" . date('M d, Y', strtotime($row['created_at'])) . "</td>";
                             
                             echo "<td style='text-align:right;'>
