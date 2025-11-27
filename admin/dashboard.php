@@ -14,20 +14,24 @@ include '../db.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
-        body { background-color: #050505; color: #e0e0e0; font-family: 'Helvetica', sans-serif; }
-        .admin-nav { background: #111; padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 40px; }
-        .nav-flex { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 900; font-size: 24px; color: #fff; }
+        /* --- GLOBAL ADMIN STYLES --- */
+        body { background-color: #050505; color: #e0e0e0; font-family: 'Helvetica', sans-serif; padding-top: 80px; }
         
-        /* Table Styles */
-        .mil-table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; background: #111; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #222; }
-        th { background: #1a1a1a; color: #888; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
-        tr:hover { background: #151515; }
-        td { color: #ccc; font-size: 15px; vertical-align: middle; }
+        /* --- RESPONSIVE NAVBAR --- */
+        .admin-nav {
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            padding: 15px 0;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { font-weight: 900; font-size: 20px; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
+        .logo span { color: #ff9800; }
 
-<<<<<<< HEAD
         .nav-links { display: flex; gap: 20px; align-items: center; }
         .nav-links a { 
             color: #aaa; text-decoration: none; font-size: 14px; font-weight: 600; 
@@ -48,33 +52,23 @@ include '../db.php';
         .mil-table-responsive { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #222; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 18px 25px; text-align: left; border-bottom: 1px solid #222; }
-        
-        /* UPDATED: Removed text-transform: uppercase */
-        th { background: #181818; color: #666; font-size: 12px; letter-spacing: 0.5px; font-weight: 700; }
-        
+        th { background: #181818; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; font-weight: 700; }
         tr:last-child td { border-bottom: none; }
         tr:hover { background: #161616; }
         td { color: #ccc; font-size: 14px; vertical-align: middle; }
         
-=======
->>>>>>> parent of 6432242 (Updated V1.5)
         /* Buttons */
-        .btn-create { background: #ff9800; color: #000; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; }
-        .btn-create:hover { background: #ffb74d; }
-        
-        .action-btn { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-right: 5px; display: inline-block; border: none; cursor: pointer; transition: 0.2s; }
-        
-        /* Edit Button */
-        .btn-edit { background: #222; color: #fff; border: 1px solid #333; }
-        .btn-edit:hover { background: #fff; color: #000; }
-        
-        /* Share Button (NEW) */
-        .btn-share { background: #004d40; color: #80cbc4; border: 1px solid #00695c; }
+        .action-btn { 
+            padding: 6px 12px; border-radius: 6px; text-decoration: none; 
+            font-size: 12px; margin-left: 5px; display: inline-flex; align-items: center; gap: 5px;
+            border: 1px solid transparent; cursor: pointer; transition: 0.2s; font-weight: 600;
+        }
+        .btn-share { background: #004d40; color: #80cbc4; border-color: #00695c; }
         .btn-share:hover { background: #00695c; color: #fff; }
-
-        /* Delete Button */
-        .btn-delete { background: #3a0000; color: #ff5252; border: 1px solid #500000; }
-        .btn-delete:hover { background: #ff0000; color: #fff; }
+        .btn-edit { background: #222; color: #fff; border-color: #333; }
+        .btn-edit:hover { background: #fff; color: #000; }
+        .btn-delete { background: #2a0a0a; color: #ff5252; border-color: #4a0a0a; }
+        .btn-delete:hover { background: #d32f2f; color: #fff; }
 
         .status-msg { padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-weight: bold; }
         .msg-success { background: #1b5e20; color: #fff; }
@@ -131,12 +125,7 @@ include '../db.php';
                             echo "<tr>";
                             echo "<td><img src='../" . $row['image_url'] . "' style='width:50px; height:50px; object-fit:cover; border-radius:4px;'></td>";
                             echo "<td><strong>" . $row['title'] . "</strong></td>";
-<<<<<<< HEAD
-                            // UPDATED: Removed text-transform:uppercase from span style below
-                            echo "<td><span style='background:#222; color:#888; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold;'>" . $row['cat_name'] . "</span></td>";
-=======
-                            echo "<td><span style='background:#222; padding:3px 8px; border-radius:4px; font-size:12px;'>" . $row['cat_name'] . "</span></td>";
->>>>>>> parent of 6432242 (Updated V1.5)
+                            echo "<td><span style='background:#222; color:#888; padding:4px 8px; border-radius:4px; font-size:11px; text-transform:uppercase; font-weight:bold;'>" . $row['cat_name'] . "</span></td>";
                             echo "<td style='color:#666; font-size:13px;'>" . date('M d, Y', strtotime($row['created_at'])) . "</td>";
                             
                             // ACTION BUTTONS
