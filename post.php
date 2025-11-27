@@ -27,12 +27,12 @@ include 'header.php';
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="mil-image-frame mil-horizontal mil-up mil-mb-60">
-                <img src="<?php echo $post['image_url']; ?>" 
-     alt="Cover Image" 
-     style="width: 1080px; height: 1080px; object-fit: cover;">
+                    <img src="<?php echo $post['image_url']; ?>" 
+                         alt="Cover Image" 
+                         style="width: 1080px; height: 1080px; object-fit: contain; background-color: #000;">
                 </div>
                 <div class="mil-text-lg mil-up mil-mb-60">
-                <?php echo $post['content']; ?>
+                    <?php echo $post['content']; ?>
                 </div>
             </div>
         </div>
