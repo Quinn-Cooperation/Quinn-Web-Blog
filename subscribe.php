@@ -4,24 +4,25 @@ include 'db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
-    // 1. Validate Email
+    // Validate Email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>alert('Invalid Email Address'); window.history.back();</script>";
         exit();
     }
 
-    // 2. Check if already subscribed
+    // Check if already subscribed
     $check = $conn->query("SELECT id FROM subscribers WHERE email='$email'");
     if ($check->num_rows > 0) {
         echo "<script>alert('You are already subscribed!'); window.history.back();</script>";
         exit();
     }
 
-    // 3. Insert into DB
+    // Insert into DB
     $stmt = $conn->prepare("INSERT INTO subscribers (email) VALUES (?)");
     $stmt->bind_param("s", $email);
 
     if ($stmt->execute()) {
+<<<<<<< HEAD
         
         // --- ADVANCED EMAIL LOGIC (Anti-Spam) ---
         $to = $email;
@@ -99,6 +100,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('Successfully Subscribed!'); window.location.href='index.php';</script>";
         }
 
+=======
+        echo "<script>alert('Successfully Subscribed! 🚀'); window.location.href='index.php';</script>";
+>>>>>>> parent of 6432242 (Updated V1.5)
     } else {
         echo "<script>alert('Database Error'); window.history.back();</script>";
     }
