@@ -10,18 +10,16 @@ $post = $result->fetch_assoc();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $cat = $_POST['category'];
-    $para1 = $_POST['para1'];
-    $para2 = $_POST['para2'];
-    $content = "<p>" . $conn->real_escape_string($para1) . "</p><br><p>" . $conn->real_escape_string($para2) . "</p>";
+    
+    $raw_content = $_POST['content'];
+    $content = nl2br($conn->real_escape_string($raw_content));
 
-    // If new image is uploaded
     if (!empty($_FILES["image"]["name"])) {
         $filename = time() . "_" . basename($_FILES["image"]["name"]);
         move_uploaded_file($_FILES["image"]["tmp_name"], "../img/blog/uploads/" . $filename);
         $db_image_url = "img/blog/uploads/" . $filename;
         $sql = "UPDATE posts SET title='$title', content='$content', category_id='$cat', image_url='$db_image_url' WHERE id=$id";
     } else {
-        // Keep old image
         $sql = "UPDATE posts SET title='$title', content='$content', category_id='$cat' WHERE id=$id";
     }
 
@@ -30,6 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
+
+// --- FIX: Convert <br> and </p> to newlines for editing ---
+$content_for_edit = $post['content'];
+$content_for_edit = preg_replace('/<br\s*\/?>/i', "\n", $content_for_edit); // Turn <br> into new line
+$content_for_edit = preg_replace('/<\/p>/i', "\n\n", $content_for_edit); // Turn </p> into double line
+$content_for_edit = strip_tags($content_for_edit); // Remove remaining tags
 ?>
 
 <!DOCTYPE html>
@@ -61,10 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label style="color:#888;">Post Title</label>
                     <input type="text" name="title" value="<?php echo $post['title']; ?>" required>
                     
-                    <label style="color:#888;">Content (Edit as raw HTML, careful with tags)</label>
-                    <textarea name="para1" rows="10" required><?php echo strip_tags($post['content']); ?></textarea>
-                    <input type="hidden" name="para2" value=""> <small style="color:#666; display:block; margin-top:-20px; margin-bottom:20px;">*Previous paragraphs merged. Edit all text here.</small>
-
+                    <label style="color:#888;">Content</label>
+                    <textarea name="content" rows="15" required 
+                              style="text-transform: none; line-height: 1.5;"><?php echo htmlspecialchars($content_for_edit); ?></textarea>
                 </div>
                 <div class="col-lg-4">
                     <label style="color:#888;">Category</label>
