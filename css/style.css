@@ -2834,16 +2834,12 @@ blog
 .mil-blog-card .mil-cover-frame img {
   width: 100%;
   height: 100%;
-  /* CHANGED: Set to contain to show full image */
-  -o-object-fit: contain;
-     object-fit: contain;
-  /* ADDED: Black background */
-  -o-object-position: center;
-     object-position: center;
+  object-fit: contain;      /* Shows full image */
+  /* REMOVED background-color: #000; */
+  object-position: center;
   position: absolute;
   top: 0;
   left: 0;
-  -webkit-transition: 0.4s cubic-bezier(0, 0, 0.3642, 1);
   transition: 0.4s cubic-bezier(0, 0, 0.3642, 1);
 }
 .mil-blog-card .mil-post-descr {
@@ -2873,7 +2869,9 @@ blog
 .mil-blog-card.mil-blog-card-hori .mil-cover-frame {
   margin-bottom: 0;
   width: 450px;
-  padding-bottom: 27%;
+  height: 450px;       /* Fixed height matching width = SQUARE */
+  padding-bottom: 0;   /* Remove percentage padding */
+  flex-shrink: 0;
 }
 .mil-blog-card.mil-blog-card-hori .mil-post-descr {
   width: calc(100% - 450px);
@@ -2888,7 +2886,8 @@ blog
   }
   .mil-blog-card.mil-blog-card-hori .mil-cover-frame {
     width: 100%;
-    padding-bottom: 65%;
+    height: auto;        /* Reset fixed height */
+    padding-bottom: 100%; /* 100% padding = Square */
     margin-bottom: 30px;
   }
   .mil-blog-card.mil-blog-card-hori .mil-post-descr {
@@ -4088,10 +4087,9 @@ images
   left: 0;
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center;
-     object-position: center;
+  object-fit: contain;      /* Shows full image */
+  /* REMOVED background-color: #000; */
+  object-position: center;
 }
 .mil-image-frame.mil-horizontal {
   padding-bottom: 65%;
