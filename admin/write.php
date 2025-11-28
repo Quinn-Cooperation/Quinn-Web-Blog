@@ -6,11 +6,9 @@ include '../db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $cat = $_POST['category'];
-    
-    $raw_content = $_POST['content'];
-    // Convert newlines to HTML line breaks
-    $content = nl2br($conn->real_escape_string($raw_content));
-
+    $para1 = $_POST['para1'];
+    $para2 = $_POST['para2'];
+    $content = "<p>" . $conn->real_escape_string($para1) . "</p><br><p>" . $conn->real_escape_string($para2) . "</p>";
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
 
     $target_dir = "../img/blog/uploads/";
@@ -25,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssi", $title, $slug, $content, $db_image_url, $cat);
         
         if ($stmt->execute()) {
-            header("Location: dashboard.php?msg=created");
+            header("Location: dashboard.php?msg=created"); // Redirect to list
             exit();
         }
     }
@@ -59,11 +57,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-lg-8">
                     <label style="color:#888;">Post Title</label>
                     <input type="text" name="title" required>
-                    
-                    <label style="color:#888;">Content</label>
-                    <textarea name="content" rows="15" required 
-                              style="text-transform: none; line-height: 1.5;" 
-                              placeholder="Type your content here..."></textarea>
+                    <label style="color:#888;">Paragraph 1</label>
+                    <textarea name="para1" rows="6" required></textarea>
+                    <label style="color:#888;">Paragraph 2</label>
+                    <textarea name="para2" rows="10" required></textarea>
                 </div>
                 <div class="col-lg-4">
                     <label style="color:#888;">Category</label>
