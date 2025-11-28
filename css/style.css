@@ -2828,7 +2828,8 @@ blog
 .mil-blog-card .mil-cover-frame {
   position: relative;
   overflow: hidden;
-  padding-bottom: 65%;
+  /* CHANGED to 100% for square */
+  padding-bottom: 100%;
   margin-bottom: 30px;
 }
 .mil-blog-card .mil-cover-frame img {
@@ -2874,7 +2875,8 @@ blog
 .mil-blog-card.mil-blog-card-hori .mil-cover-frame {
   margin-bottom: 0;
   width: 450px;
-  padding-bottom: 27%;
+ /* CHANGED to match width for square shape */
+ padding-bottom: 450px;
 }
 .mil-blog-card.mil-blog-card-hori .mil-post-descr {
   width: calc(100% - 450px);
@@ -2889,7 +2891,8 @@ blog
   }
   .mil-blog-card.mil-blog-card-hori .mil-cover-frame {
     width: 100%;
-    padding-bottom: 65%;
+    /* CHANGED to 100% for square */
+    padding-bottom: 100%;
     margin-bottom: 30px;
   }
   .mil-blog-card.mil-blog-card-hori .mil-post-descr {
