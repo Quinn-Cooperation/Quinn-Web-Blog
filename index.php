@@ -38,8 +38,7 @@ include 'header.php';
                 <a href="post.php?id=<?php echo $row['id']; ?>" class="mil-blog-card mil-blog-card-hori mil-more mil-mb-60">
                     <div class="mil-cover-frame mil-up">
                         <img src="<?php echo $row['image_url']; ?>" 
-                             alt="cover" 
-                             style="width: 1080px; height: 1080px; object-fit: contain; background-color: #000;">
+                             alt="cover">
                     </div>
                     <div class="mil-post-descr">
                         <div class="mil-labels mil-up mil-mb-30">
