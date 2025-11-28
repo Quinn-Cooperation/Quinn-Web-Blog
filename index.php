@@ -37,7 +37,8 @@ include 'header.php';
             <div class="col-lg-12">
                 <a href="post.php?id=<?php echo $row['id']; ?>" class="mil-blog-card mil-blog-card-hori mil-more mil-mb-60">
                     <div class="mil-cover-frame mil-up">
-                        <img src="<?php echo $row['image_url']; ?>" alt="cover">
+                        <img src="<?php echo $row['image_url']; ?>" 
+                             alt="cover">
                     </div>
                     <div class="mil-post-descr">
                         <div class="mil-labels mil-up mil-mb-30">
