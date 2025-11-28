@@ -26,7 +26,7 @@ include 'header.php';
     <div class="container mil-p-120-120">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="mil-image-frame mil-square mil-up mil-mb-60" style="max-height: 600px;max-width: 600px; margin: 0 auto;">
+                <div class="mil-image-frame mil-square mil-up mil-mb-60" style="max-width: 600px; margin: 0 auto;">
                     <img src="<?php echo $post['image_url']; ?>" alt="Cover Image">
                 </div>
                 <div class="mil-text-lg mil-up mil-mb-60">
