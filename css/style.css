@@ -2838,8 +2838,6 @@ blog
   /* CHANGED: Set to contain to show full image */
   -o-object-fit: contain;
      object-fit: contain;
-  /* ADDED: Black background */
-  background-color: #000;
   -o-object-position: center;
      object-position: center;
   position: absolute;
