@@ -24,7 +24,7 @@
             <div class="mil-choose-text">Choose</div>
         </div>
 
-        <div class="mil-preloader">
+        <!-- <div class="mil-preloader">
             <div class="mil-preloader-animation">
                 <div class="mil-pos-abs mil-animation-1">
                     <p class="mil-h3 mil-muted mil-thin">Inventing</p>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="mil-progress-track">
             <div class="mil-progress"></div>
