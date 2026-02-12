@@ -12,6 +12,7 @@ include '../db.php';
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/plugins/bootstrap-grid.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+       <link rel="icon" type="image/png" href="../img/headimg.png" />
 
     <style>
         /* REUSING GLOBAL STYLES FROM DASHBOARD.PHP FOR CONSISTENCY */
