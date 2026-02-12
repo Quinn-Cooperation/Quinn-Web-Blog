@@ -25,16 +25,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Admin Login - Quinn</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/plugins/bootstrap-grid.css" />
+    <link rel="icon" type="image/png" href="../img/headimg.png" />
     <style>
         /* --- MODERN LOGIN STYLES --- */
-        body { 
-            background-color: #050505; 
-            color: #e0e0e0; 
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
             font-family: 'Helvetica', sans-serif;
             height: 100vh;
             display: flex;
@@ -49,26 +51,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: 1px solid #222;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .logo { 
-            text-align: center; 
-            font-weight: 900; 
-            font-size: 28px; 
-            color: #fff; 
-            margin-bottom: 30px; 
-            letter-spacing: -1px; 
+        .logo {
+            text-align: center;
+            font-weight: 900;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
         }
 
-        label { 
-            font-size: 12px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            color: #666; 
-            margin-bottom: 8px; 
-            display: block; 
-            font-weight: 700; 
+        label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 700;
         }
 
         input {
@@ -130,15 +132,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: none;
             transition: 0.3s;
         }
-        .back-link:hover { color: #888; }
+
+        .back-link:hover {
+            color: #888;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="login-card">
         <div class="logo">Quinn.<span style="color:#ff9800; font-weight:100;">Admin</span></div>
 
-        <?php if(isset($error)): ?>
+        <?php if (isset($error)): ?>
             <div class="error-msg">⚠️ <?php echo $error; ?></div>
         <?php endif; ?>
 
@@ -156,4 +162,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
 </body>
+
 </html>
