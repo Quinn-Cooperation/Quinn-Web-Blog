@@ -1,13 +1,9 @@
 <?php
-// $host = "localhost";
-// $user = "buwaggif_quinnblog"; // Update this
-// $pass = "Quinn@2025"; // Update this
-// $db   = "buwaggif_quinn_blog";   // Update this
-
 $host = "localhost";
-$user = "root"; // Update this
-$pass = "JapL050514"; // Update this
-$db   = "quinblog";   // Update this
+$user = "buwaggif_quinnblog"; // Update this
+$pass = "Quinn@2025"; // Update this
+$db   = "buwaggif_quinn_blog";   // Update this
+
 
 // Create Connection
 $conn = new mysqli($host, $user, $pass, $db);
