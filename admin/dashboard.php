@@ -569,7 +569,7 @@ $total_pages = ceil($total_rows / $limit);
         // --- 3. COPY LINK FUNCTION ---
         function copyLink(id) {
             // Adjust this URL to match your live site domain
-            var fullUrl = window.location.origin + "/Quinn-Web-Blog/post.php?id=" + id;
+            var fullUrl = window.location.origin + "/post.php?id=" + id;
 
             navigator.clipboard.writeText(fullUrl).then(function() {
                 showToast("Link copied to clipboard!", "success");
