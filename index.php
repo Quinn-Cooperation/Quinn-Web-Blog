@@ -1,5 +1,5 @@
 <?php
-// Prevent caching to ensure fresh data on every click
+// Prevent caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -9,11 +9,9 @@ include 'header.php';
 
 $conn->set_charset("utf8mb4");
 
-// Capture Search & Category Inputs
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $cat_filter = (isset($_GET['category']) && is_numeric($_GET['category'])) ? (int)$_GET['category'] : 0;
 
-// Greeting Logic
 $hour = date('H');
 $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "Good Evening");
 ?>
@@ -102,18 +100,25 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         cursor: pointer;
     }
 
-    /* --- CATEGORY NAV WRAPPER (NEW) --- */
+    /* --- SMART CATEGORY NAV --- */
     .cat-nav-wrapper {
         position: relative;
-        max-width: 800px;
+        max-width: 850px;
         margin: 40px auto 0;
         display: flex;
         align-items: center;
+        /* Padding reserves space for arrows. Desktop gets 40px. */
         padding: 0 40px;
-        /* Space for arrows */
+        opacity: 0;
+        animation: fadeIn 0.5s forwards;
     }
 
-    /* Scroll Buttons */
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+
     .scroll-btn {
         position: absolute;
         top: 50%;
@@ -124,7 +129,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff;
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
         cursor: pointer;
@@ -147,7 +152,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         right: 0;
     }
 
-    /* Category Nav Scroll Area */
     .category-nav {
         display: flex;
         gap: 10px;
@@ -157,6 +161,11 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
         width: 100%;
+        justify-content: flex-start;
+    }
+
+    .category-nav.centered {
+        justify-content: center;
     }
 
     .category-nav::-webkit-scrollbar {
@@ -188,7 +197,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         border-color: var(--accent);
     }
 
-    /* --- POST GRID & CARDS --- */
+    /* --- POST GRID --- */
     .blog-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -229,7 +238,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         transition: 0.3s;
     }
 
-    /* Featured Layout */
     .featured-card {
         grid-column: 1 / -1;
         display: grid;
@@ -308,14 +316,9 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             height: 240px;
         }
 
-        /* On Mobile, move arrows closer to edge */
+        /* FIX: Increased padding on mobile to create gap between arrows and text */
         .cat-nav-wrapper {
-            padding: 0 35px;
-        }
-
-        .scroll-btn {
-            width: 28px;
-            height: 28px;
+            padding: 0 50px;
         }
     }
 </style>
@@ -339,7 +342,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         </div>
 
         <div class="cat-nav-wrapper">
-            <button class="scroll-btn left" onclick="scrollCategories(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="scroll-btn left" id="btnLeft" onclick="scrollCategories(-1)"><i class="fa-solid fa-chevron-left"></i></button>
 
             <nav class="category-nav" id="categoryScroll">
                 <a href="index.php" class="cat-item <?php echo ($cat_filter === 0) ? 'active' : ''; ?>">All Stories</a>
@@ -354,14 +357,13 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 ?>
             </nav>
 
-            <button class="scroll-btn right" onclick="scrollCategories(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="scroll-btn right" id="btnRight" onclick="scrollCategories(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
     </div>
 </section>
 
 <div class="container">
-
     <?php if ($cat_filter > 0): ?>
         <div style="margin-top: 30px; color: #888; font-size: 14px;">
             Filtering by Category ID: <strong><?php echo $cat_filter; ?></strong>
@@ -374,12 +376,10 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 LEFT JOIN categories ON posts.category_id = categories.id";
 
         $where_clauses = [];
-
         if (!empty($search)) {
             $s = $conn->real_escape_string($search);
             $where_clauses[] = "(posts.title LIKE '%$s%' OR posts.content LIKE '%$s%')";
         }
-
         if ($cat_filter > 0) {
             $where_clauses[] = "posts.category_id = $cat_filter";
         }
@@ -389,7 +389,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         }
 
         $sql .= " ORDER BY created_at DESC";
-
         $result = $conn->query($sql);
 
         if ($result && $result->num_rows > 0) {
@@ -434,15 +433,47 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 </div>
 
 <script>
-    // SCROLL LOGIC FOR ARROWS
+    const container = document.getElementById('categoryScroll');
+    const btnLeft = document.getElementById('btnLeft');
+    const btnRight = document.getElementById('btnRight');
+
+    // 1. SMART CHECK: Show/Hide Arrows based on overflow
+    function checkArrows() {
+        if (container.scrollWidth <= container.clientWidth) {
+            container.classList.add('centered');
+            btnLeft.style.display = 'none';
+            btnRight.style.display = 'none';
+        } else {
+            container.classList.remove('centered');
+
+            // Show Left if scrolled > 5px
+            btnLeft.style.display = container.scrollLeft > 5 ? 'flex' : 'none';
+
+            // Show Right if not at end
+            const atEnd = Math.ceil(container.scrollLeft + container.clientWidth) >= container.scrollWidth;
+            btnRight.style.display = atEnd ? 'none' : 'flex';
+        }
+    }
+
+    // 2. SCROLL ACTION
     function scrollCategories(direction) {
-        const container = document.getElementById('categoryScroll');
-        const scrollAmount = 150; // Distance to scroll
+        const scrollAmount = 200;
         container.scrollBy({
             left: direction * scrollAmount,
             behavior: 'smooth'
         });
     }
+
+    // 3. LISTENERS
+    container.addEventListener('scroll', checkArrows);
+    window.addEventListener('resize', checkArrows);
+
+    // Initial Check
+    document.addEventListener("DOMContentLoaded", checkArrows);
 </script>
 
 <?php include 'footer.php'; ?>
+
+
+
+
