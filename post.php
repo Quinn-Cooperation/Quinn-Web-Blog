@@ -330,11 +330,11 @@ include 'header.php';
 
             <div class="post-footer-area">
                 <div class="thanks-box">
-                    <h4 style="font-family: var(--heading-font); margin-bottom: 10px; color: var(--dark); font-weight: 700;">Thanks for reading!</h4>
+                    <h4 style="font-family: var(--heading-font); margin-bottom: 10px; color: var(--dark); font-weight: 700;">Thanks For Reading!</h4>
                     <p style="font-size: 16px; color: #666; margin-bottom: 25px;">If you found this article helpful, feel free to share it with your friends or colleagues.</p>
 
                     <a href="./index.php" class="back-to-blog">
-                        <i class="fa-solid fa-arrow-left"></i> Back to All Stories
+                        <i class="fa-solid fa-arrow-left"></i> Back To All Stories
                     </a>
                 </div>
             </div>
