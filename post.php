@@ -8,7 +8,6 @@ $conn->set_charset("utf8mb4");
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 // --- VIEW COUNTER LOGIC ---
-// Make sure you ran: ALTER TABLE posts ADD COLUMN views INT DEFAULT 0;
 if (!isset($_SESSION['viewed_post_' . $id])) {
     $conn->query("UPDATE posts SET views = views + 1 WHERE id = $id");
     $_SESSION['viewed_post_' . $id] = true;
@@ -27,7 +26,7 @@ if (!$post) {
 $wordCount = str_word_count(strip_tags($post['content']));
 $readingTime = max(1, ceil($wordCount / 200));
 
-// --- FIX: Get the full current URL for sharing ---
+// Get full URL
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
 $full_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
@@ -87,9 +86,9 @@ include 'header.php';
         margin-right: 5px;
     }
 
-    /* Image Container (No Crop + Blur) */
+    /* --- IMAGE FIX (1080x1080) --- */
     .featured-outer {
-        max-width: 1100px;
+        max-width: 1080px;
         margin: 0 auto 60px;
         padding: 0 20px;
     }
@@ -97,6 +96,8 @@ include 'header.php';
     .featured-aspect-container {
         position: relative;
         width: 100%;
+        max-width: 1080px;
+        aspect-ratio: 1 / 1;
         background: #000;
         border-radius: 24px;
         overflow: hidden;
@@ -104,7 +105,6 @@ include 'header.php';
         align-items: center;
         justify-content: center;
         box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
-        max-height: 600px;
     }
 
     .bg-blur {
@@ -124,12 +124,12 @@ include 'header.php';
     .main-featured-img {
         position: relative;
         z-index: 2;
-        max-width: 100%;
-        max-height: 600px;
-        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-    /* Layout with Share Bar */
+    /* Layout */
     .post-layout {
         display: grid;
         grid-template-columns: 100px 1fr 100px;
@@ -184,29 +184,7 @@ include 'header.php';
         text-decoration: none;
     }
 
-    /* TOAST STYLING */
-    .toast {
-        visibility: hidden;
-        min-width: 200px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 8px;
-        padding: 12px;
-        position: fixed;
-        z-index: 9999;
-        left: 50%;
-        bottom: 30px;
-        transform: translateX(-50%);
-        border: 1px solid var(--accent);
-    }
-
-    .toast.show {
-        visibility: visible;
-        animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-
-    /* Footer / Thanks Section Styles */
+    /* Footer / Thanks Section */
     .post-footer-area {
         margin-top: 80px;
         padding-top: 40px;
@@ -249,28 +227,48 @@ include 'header.php';
         box-shadow: 0 15px 30px rgba(255, 152, 0, 0.3) !important;
     }
 
-    @keyframes fadein {
-        from {
-            bottom: 0;
-            opacity: 0;
-        }
-
-        to {
-            bottom: 30px;
-            opacity: 1;
-        }
+    /* --- PREMIUM TOAST STYLING --- */
+    #toast-container {
+        visibility: hidden;
+        min-width: 300px;
+        background-color: rgba(20, 20, 20, 0.95);
+        /* Darker, sleek background */
+        backdrop-filter: blur(10px);
+        /* Glass effect */
+        color: #fff;
+        text-align: left;
+        border-radius: 12px;
+        padding: 16px 20px;
+        position: fixed;
+        z-index: 9999;
+        right: 30px;
+        /* Right side positioning */
+        bottom: 30px;
+        font-family: var(--heading-font);
+        font-size: 14px;
+        font-weight: 500;
+        border-left: 5px solid var(--accent);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        transform: translateY(100px);
+        /* Start slightly below */
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        /* Bouncy slide in */
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
-    @keyframes fadeout {
-        from {
-            bottom: 30px;
-            opacity: 1;
-        }
+    #toast-container.show {
+        visibility: visible;
+        transform: translateY(0);
+        opacity: 1;
+    }
 
-        to {
-            bottom: 0;
-            opacity: 0;
-        }
+    #toast-container i {
+        font-size: 20px;
+        color: #4caf50;
+        /* Green success checkmark */
     }
 
     @media (max-width: 800px) {
@@ -285,6 +283,20 @@ include 'header.php';
             top: 0;
             justify-content: center;
             margin-bottom: 40px;
+        }
+
+        /* Mobile Toast Position */
+        #toast-container {
+            left: 50%;
+            right: auto;
+            transform: translate(-50%, 100px);
+            bottom: 20px;
+            width: 90%;
+            justify-content: center;
+        }
+
+        #toast-container.show {
+            transform: translate(-50%, 0);
         }
     }
 </style>
@@ -327,15 +339,17 @@ include 'header.php';
                 </div>
             </div>
         </div>
-
         <div></div>
     </div>
 </article>
 
-<div id="copyToast" class="toast">Link Copied to Clipboard!</div>
+<div id="toast-container">
+    <i class="fa-solid fa-circle-check"></i>
+    <span>Link Copied Successfully</span>
+</div>
 
 <script>
-    // Copy Link Logic
+    // Premium Toast Logic
     function copyPageLink() {
         const el = document.createElement('textarea');
         el.value = window.location.href;
@@ -344,11 +358,13 @@ include 'header.php';
         document.execCommand('copy');
         document.body.removeChild(el);
 
-        var x = document.getElementById("copyToast");
-        x.className = "toast show";
+        var x = document.getElementById("toast-container");
+        x.classList.add("show");
+
+        // Hide after 3.5 seconds
         setTimeout(function() {
-            x.className = x.className.replace("show", "");
-        }, 3000);
+            x.classList.remove("show");
+        }, 3500);
     }
 
     // Standard Link Fixer
