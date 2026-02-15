@@ -232,9 +232,7 @@ include 'header.php';
         visibility: hidden;
         min-width: 300px;
         background-color: rgba(20, 20, 20, 0.95);
-        /* Darker, sleek background */
         backdrop-filter: blur(10px);
-        /* Glass effect */
         color: #fff;
         text-align: left;
         border-radius: 12px;
@@ -242,7 +240,6 @@ include 'header.php';
         position: fixed;
         z-index: 9999;
         right: 30px;
-        /* Right side positioning */
         bottom: 30px;
         font-family: var(--heading-font);
         font-size: 14px;
@@ -250,10 +247,8 @@ include 'header.php';
         border-left: 5px solid var(--accent);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         transform: translateY(100px);
-        /* Start slightly below */
         opacity: 0;
         transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        /* Bouncy slide in */
         display: flex;
         align-items: center;
         gap: 15px;
@@ -268,7 +263,6 @@ include 'header.php';
     #toast-container i {
         font-size: 20px;
         color: #4caf50;
-        /* Green success checkmark */
     }
 
     @media (max-width: 800px) {
@@ -320,8 +314,22 @@ include 'header.php';
 
     <div class="post-layout">
         <aside class="share-sidebar">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($full_url); ?>" target="_blank" class="share-btn" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($post['title'] . " - " . $full_url); ?>" target="_blank" class="share-btn" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($full_url); ?>" 
+               target="_blank" 
+               class="share-btn" 
+               title="Share on Facebook"
+               onclick="triggerToast('Sharing to Facebook...')">
+               <i class="fa-brands fa-facebook-f"></i>
+            </a>
+
+            <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($post['title'] . " - " . $full_url); ?>" 
+               target="_blank" 
+               class="share-btn" 
+               title="Share on WhatsApp"
+               onclick="triggerToast('Opening WhatsApp...')">
+               <i class="fa-brands fa-whatsapp"></i>
+            </a>
+
             <button onclick="copyPageLink()" class="share-btn" title="Copy Link"><i class="fa-solid fa-link"></i></button>
         </aside>
 
@@ -345,20 +353,16 @@ include 'header.php';
 
 <div id="toast-container">
     <i class="fa-solid fa-circle-check"></i>
-    <span>Link Copied Successfully</span>
+    <span id="toast-text">Notification</span>
 </div>
 
 <script>
-    // Premium Toast Logic
-    function copyPageLink() {
-        const el = document.createElement('textarea');
-        el.value = window.location.href;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-
+    // 1. GENERIC TOAST FUNCTION
+    function triggerToast(message) {
         var x = document.getElementById("toast-container");
+        var textSpan = document.getElementById("toast-text");
+        
+        textSpan.innerText = message;
         x.classList.add("show");
 
         // Hide after 3.5 seconds
@@ -367,7 +371,19 @@ include 'header.php';
         }, 3500);
     }
 
-    // Standard Link Fixer
+    // 2. COPY LINK LOGIC
+    function copyPageLink() {
+        const el = document.createElement('textarea');
+        el.value = window.location.href;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+
+        triggerToast('Link Copied Successfully');
+    }
+
+    // 3. LINK FIXER
     document.addEventListener("DOMContentLoaded", function() {
         var links = document.getElementById('blogContent').getElementsByTagName('a');
         for (var i = 0; i < links.length; i++) {

@@ -108,16 +108,12 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         display: flex;
         align-items: center;
         /* Padding reserves space for arrows. Desktop gets 40px. */
-        padding: 0 40px;
+        padding: 0 40px; 
         opacity: 0;
         animation: fadeIn 0.5s forwards;
     }
 
-    @keyframes fadeIn {
-        to {
-            opacity: 1;
-        }
-    }
+    @keyframes fadeIn { to { opacity: 1; } }
 
     .scroll-btn {
         position: absolute;
@@ -127,9 +123,9 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         height: 32px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255,255,255,0.2);
         color: #fff;
-        display: none;
+        display: none; 
         align-items: center;
         justify-content: center;
         cursor: pointer;
@@ -137,20 +133,10 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         transition: 0.3s;
         font-size: 12px;
     }
-
-    .scroll-btn:hover {
-        background: var(--accent);
-        color: #000;
-        border-color: var(--accent);
-    }
-
-    .scroll-btn.left {
-        left: 0;
-    }
-
-    .scroll-btn.right {
-        right: 0;
-    }
+    
+    .scroll-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+    .scroll-btn.left { left: 0; }
+    .scroll-btn.right { right: 0; }
 
     .category-nav {
         display: flex;
@@ -168,9 +154,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         justify-content: center;
     }
 
-    .category-nav::-webkit-scrollbar {
-        display: none;
-    }
+    .category-nav::-webkit-scrollbar { display: none; }
 
     .cat-item {
         padding: 10px 22px;
@@ -186,16 +170,8 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         flex-shrink: 0;
     }
 
-    .cat-item:hover {
-        background: var(--accent);
-        color: #000;
-    }
-
-    .cat-item.active {
-        background: var(--accent);
-        color: #000;
-        border-color: var(--accent);
-    }
+    .cat-item:hover { background: var(--accent); color: #000; }
+    .cat-item.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
     /* --- POST GRID --- */
     .blog-grid {
@@ -206,19 +182,11 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
     }
 
     @keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .modern-card,
-    .featured-card {
+    .modern-card, .featured-card {
         background: var(--card-bg);
         border-radius: 24px;
         overflow: hidden;
@@ -238,88 +206,49 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         transition: 0.3s;
     }
 
-    .featured-card {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
+    .featured-card { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr 1fr; }
+    
+    /* --- IMAGE ASPECT RATIO FIX (SQUARE 1:1) --- */
+    .card-image { 
+        width: 100%; 
+        aspect-ratio: 1 / 1; /* Forces Square */
+        overflow: hidden; 
     }
-
-    .card-image {
-        width: 100%;
-        height: 240px;
-        overflow: hidden;
+    
+    .featured-card .card-image { 
+        aspect-ratio: 1 / 1; /* Forces Square on Featured too */
+        height: auto; /* Remove fixed height */
     }
-
-    .featured-card .card-image {
-        height: 450px;
+    
+    .card-image img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; /* Ensures image covers the square area */
     }
+    /* ------------------------------------------- */
 
-    .card-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .card-content {
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .featured-card .card-content {
-        padding: 50px;
-        justify-content: center;
-    }
-
+    .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+    .featured-card .card-content { padding: 50px; justify-content: center; }
+    
     .category-pill {
-        display: inline-block;
-        padding: 4px 12px;
-        background: rgba(255, 152, 0, 0.1);
-        color: var(--accent);
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        border-radius: 50px;
-        margin-bottom: 15px;
-        width: fit-content;
+        display: inline-block; padding: 4px 12px; background: rgba(255, 152, 0, 0.1);
+        color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase;
+        border-radius: 50px; margin-bottom: 15px; width: fit-content;
     }
 
-    .card-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        color: var(--dark-bg);
-    }
-
-    .featured-card .card-title {
-        font-size: 36px;
-    }
+    .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--dark-bg); }
+    .featured-card .card-title { font-size: 36px; }
 
     .card-footer {
-        margin-top: auto;
-        padding-top: 20px;
-        border-top: 1px solid #f8f8f8;
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        color: #aaa;
+        margin-top: auto; padding-top: 20px; border-top: 1px solid #f8f8f8;
+        display: flex; justify-content: space-between; font-size: 13px; color: #aaa;
     }
 
     @media (max-width: 991px) {
-        .featured-card {
-            grid-template-columns: 1fr;
-            grid-column: auto;
-        }
-
-        .featured-card .card-image {
-            height: 240px;
-        }
-
+        .featured-card { grid-template-columns: 1fr; grid-column: auto; }
+        
         /* FIX: Increased padding on mobile to create gap between arrows and text */
-        .cat-nav-wrapper {
-            padding: 0 50px;
-        }
+        .cat-nav-wrapper { padding: 0 50px; } 
     }
 </style>
 
@@ -343,7 +272,7 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 
         <div class="cat-nav-wrapper">
             <button class="scroll-btn left" id="btnLeft" onclick="scrollCategories(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-
+            
             <nav class="category-nav" id="categoryScroll">
                 <a href="index.php" class="cat-item <?php echo ($cat_filter === 0) ? 'active' : ''; ?>">All Stories</a>
                 <?php
@@ -356,10 +285,10 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 }
                 ?>
             </nav>
-
+            
             <button class="scroll-btn right" id="btnRight" onclick="scrollCategories(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-
+        
     </div>
 </section>
 
@@ -473,7 +402,3 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 </script>
 
 <?php include 'footer.php'; ?>
-
-
-
-
