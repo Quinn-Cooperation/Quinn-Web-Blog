@@ -102,15 +102,65 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         cursor: pointer;
     }
 
-    /* --- CATEGORY NAV --- */
+    /* --- CATEGORY NAV WRAPPER (NEW) --- */
+    .cat-nav-wrapper {
+        position: relative;
+        max-width: 800px;
+        margin: 40px auto 0;
+        display: flex;
+        align-items: center;
+        padding: 0 40px;
+        /* Space for arrows */
+    }
+
+    /* Scroll Buttons */
+    .scroll-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition: 0.3s;
+        font-size: 12px;
+    }
+
+    .scroll-btn:hover {
+        background: var(--accent);
+        color: #000;
+        border-color: var(--accent);
+    }
+
+    .scroll-btn.left {
+        left: 0;
+    }
+
+    .scroll-btn.right {
+        right: 0;
+    }
+
+    /* Category Nav Scroll Area */
     .category-nav {
         display: flex;
-        justify-content: center;
         gap: 10px;
-        margin-top: 40px;
         overflow-x: auto;
-        padding: 10px;
+        padding: 5px 0;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        width: 100%;
+    }
+
+    .category-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .cat-item {
@@ -123,6 +173,8 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         font-weight: 600;
         transition: 0.2s;
         border: 1px solid transparent;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .cat-item:hover {
@@ -144,7 +196,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         padding: 60px 0 100px;
     }
 
-    /* ANIMATION FIX: Removed 'opacity: 0' and used keyframes instead */
     @keyframes fadeUp {
         from {
             opacity: 0;
@@ -168,7 +219,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         text-decoration: none;
         color: inherit;
         height: 100%;
-        /* Force animation on load - NO JS REQUIRED */
         animation: fadeUp 0.6s ease-out forwards;
     }
 
@@ -257,6 +307,16 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         .featured-card .card-image {
             height: 240px;
         }
+
+        /* On Mobile, move arrows closer to edge */
+        .cat-nav-wrapper {
+            padding: 0 35px;
+        }
+
+        .scroll-btn {
+            width: 28px;
+            height: 28px;
+        }
     }
 </style>
 
@@ -278,20 +338,25 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
             </form>
         </div>
 
-        <nav class="category-nav">
-            <a href="index.php" class="cat-item <?php echo ($cat_filter === 0) ? 'active' : ''; ?>">All Stories</a>
-            <?php
-            // Fetch Categories
-            $cat_res = $conn->query("SELECT * FROM categories ORDER BY name ASC");
-            if ($cat_res) {
-                while ($c = $cat_res->fetch_assoc()) {
-                    $isActive = ($cat_filter === (int)$c['id']) ? 'active' : '';
-                    // Standard Link
-                    echo '<a href="index.php?category=' . $c['id'] . '" class="cat-item ' . $isActive . '">' . htmlspecialchars($c['name']) . '</a>';
+        <div class="cat-nav-wrapper">
+            <button class="scroll-btn left" onclick="scrollCategories(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+
+            <nav class="category-nav" id="categoryScroll">
+                <a href="index.php" class="cat-item <?php echo ($cat_filter === 0) ? 'active' : ''; ?>">All Stories</a>
+                <?php
+                $cat_res = $conn->query("SELECT * FROM categories ORDER BY name ASC");
+                if ($cat_res) {
+                    while ($c = $cat_res->fetch_assoc()) {
+                        $isActive = ($cat_filter === (int)$c['id']) ? 'active' : '';
+                        echo '<a href="index.php?category=' . $c['id'] . '" class="cat-item ' . $isActive . '">' . htmlspecialchars($c['name']) . '</a>';
+                    }
                 }
-            }
-            ?>
-        </nav>
+                ?>
+            </nav>
+
+            <button class="scroll-btn right" onclick="scrollCategories(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
     </div>
 </section>
 
@@ -305,24 +370,20 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 
     <div class="blog-grid">
         <?php
-        // SQL QUERY BUILDER
         $sql = "SELECT posts.*, categories.name as cat_name FROM posts 
                 LEFT JOIN categories ON posts.category_id = categories.id";
 
         $where_clauses = [];
 
-        // Add Search Logic
         if (!empty($search)) {
             $s = $conn->real_escape_string($search);
             $where_clauses[] = "(posts.title LIKE '%$s%' OR posts.content LIKE '%$s%')";
         }
 
-        // Add Category Logic
         if ($cat_filter > 0) {
             $where_clauses[] = "posts.category_id = $cat_filter";
         }
 
-        // Combine Logic
         if (count($where_clauses) > 0) {
             $sql .= " WHERE " . implode(" AND ", $where_clauses);
         }
@@ -331,7 +392,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
 
         $result = $conn->query($sql);
 
-        // --- RENDER POSTS ---
         if ($result && $result->num_rows > 0) {
             $count = 0;
             while ($row = $result->fetch_assoc()) {
@@ -339,7 +399,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 $wordCount = str_word_count(strip_tags($row['content']));
                 $readTime = max(1, ceil($wordCount / 200));
 
-                // Feature logic: Only first post, only on home page
                 $is_featured = ($count == 0 && empty($search) && $cat_filter == 0);
                 $cardClass = $is_featured ? 'featured-card' : 'modern-card';
         ?>
@@ -364,7 +423,6 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
                 $count++;
             }
         } else {
-            // NO POSTS FOUND UI
             echo "<div style='grid-column: 1/-1; text-align:center; padding: 100px 0;'>
                     <div style='font-size: 40px; color: #ddd; margin-bottom: 20px;'><i class='fa-regular fa-folder-open'></i></div>
                     <h2 style='color:#ccc; font-weight: 400; margin-bottom: 15px;'>No stories found here.</h2>
@@ -374,5 +432,17 @@ $greeting = ($hour < 12) ? "Good Morning" : (($hour < 18) ? "Good Afternoon" : "
         ?>
     </div>
 </div>
+
+<script>
+    // SCROLL LOGIC FOR ARROWS
+    function scrollCategories(direction) {
+        const container = document.getElementById('categoryScroll');
+        const scrollAmount = 150; // Distance to scroll
+        container.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+</script>
 
 <?php include 'footer.php'; ?>
